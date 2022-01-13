@@ -63,13 +63,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.4/sweetalert2.all.min.js"></script>
 
     <script>
-        const siteRoot = window.location.pathname.split('/');
-        const secondLevelLocation = siteRoot[1];
-        const req = location.host.includes('localhost') ? '' : '/' + secondLevelLocation; //
+        //const siteRoot = window.location.pathname.split('/');
+        //const secondLevelLocation = siteRoot[1];
+        //const req = location.host.includes('localhost') ? '' : '/' + secondLevelLocation; //
 
-        const url = location.host.includes('localhost') ?location.host :'/' + secondLevelLocation;
+        //const url = location.host.includes('localhost') ?location.host :'/' + secondLevelLocation;
 
-        console.log();
+        //console.log();
 
         var tbl_test;
 
@@ -186,8 +186,8 @@
         function test_api() {
             fetch(url_)
                 .then(function (resp) {
-                    swal_loading();
                     empty_data(`#tbl-api tbody`);
+                    swal_loading();
                     return resp.json() // แปลงข้อมูลที่ได้เป็น json
                 })
                 .then(function (data1) {
@@ -212,7 +212,6 @@
                 processData: false,
                 beforeSend: function () {
                     empty_data(`#tbl-api tbody`);
-
                     swal_loading();
                 },
                 success: function (data, textStatus, jqXHR) {
@@ -227,8 +226,6 @@
 
         // async await
         async function get_user() {
-            empty_data(`#tbl-api tbody`);
-
             let res = await fetch(url_);
             console.log(res);
             let data3 = await res.json();
@@ -236,6 +233,7 @@
         }
 
         function test_api3() {
+            empty_data(`#tbl-api tbody`);
             swal_loading();
             // var aa = get_user().data2;
             get_user().then(
