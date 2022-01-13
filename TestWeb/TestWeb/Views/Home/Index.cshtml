@@ -103,7 +103,7 @@
 
                 columns: [
                     { data: 'id', className: 'text-center', searchable: false, orderable: false },
-                    { data: 'name' },
+                    { data: 'name', name:'cvbcb55'},
                     { data: 'lastname' },
                     { data: 'email' },
                     //{ data: 'id', searchable: false, orderable: false },
@@ -186,9 +186,8 @@
         function test_api() {
             fetch(url_)
                 .then(function (resp) {
-
-                    empty_data(`#tbl-api tbody`);
                     swal_loading();
+                    empty_data(`#tbl-api tbody`);
                     return resp.json() // แปลงข้อมูลที่ได้เป็น json
                 })
                 .then(function (data1) {
