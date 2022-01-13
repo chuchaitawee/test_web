@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section Styles{
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />*@
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
+}
+
+<div class="row" style="margin-top:1em">
+    <div class="col-md-12">
+        <table class="table" id="tbl-test">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>name</th>
+                    <th>lastname</th>
+                    <th>email</th>
+                    @*<th>action</th>*@
+                </tr>
+            </thead>
+
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(`#tbl-test`).DataTable({
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                // ordering: true,
+                order: [], //[ 1, false ]
+                iDisplayLength: 10,
+                aLengthMenu: [
+                    [10, 20, 50, -1],
+                    [10, 20, 50, "ทั้งหมด"]
+                ],
+                language: {
+                    // search: ""
+                },
+
+                ajax: {
+                    type: `get`,
+                    url: `../Home/GetDataTable`,
+                    data: function (d) {
+                        //d.office_category_id = office_category_id;
+                        // console.log(d);
+                    },
+                },
+
+                columns: [
+                    { data: 'id', className: 'text-center', searchable: false, orderable: false },
+                    { data: 'name' },
+                    { data: 'lastname', orderable: false },
+                    { data: 'email', orderable: false },
+                    //{ data: 'id', className: 'text-center', searchable: false, orderable: false },
+                ],
+                columnDefs: [
+                    {
+                        targets: 0,
+
+                        render: function (data, type, row, meta) {
+                            // console.log(meta);
+                            return (meta.row + meta.settings._iDisplayStart + 1);
+                        }
+                    },
+
+                    //{
+                    //    targets: -1,
+
+                    //    render: function (data, type, row, meta) {
+                    //        return `
+                    //                            <a href="${data}" class="btn btn-sm btn-warning btn-edit" title="แก้ไขข้อมูล">
+                    //                            <i class="fa fa-edit m-0"></i>
+                    //                            </a>
+                    //                        `;
+                    //        // href=" url('setting/${data}') "
+                    //    }
+                    //}
+                ],
+
+            });
+        });
+    </script>
+}
