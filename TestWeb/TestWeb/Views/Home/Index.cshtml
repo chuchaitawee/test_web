@@ -2,20 +2,49 @@
     ViewBag.Title = "Home Page";
 }
 @section Styles{
-    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />*@
+
+    <!-- datatables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
+    <!-- swal -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.4/sweetalert2.min.css" rel="stylesheet">
 }
 
 <div class="row" style="margin-top:1em">
     <div class="col-md-12">
-        <table class="table" id="tbl-test">
+
+        <button id="btn-refresh" class="btn btn-info">refresh</button>
+
+        <table class="table table-bordered" id="tbl-test">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>name</th>
                     <th>lastname</th>
                     <th>email</th>
-                    @*<th>action</th>*@
+                </tr>
+            </thead>
+
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row" style="margin-top:1em">
+    <div class="col-md-12">
+        <button onclick="test_api()" class="btn btn-success">fetch_api</button>
+        <button onclick="test_api2()" class="btn btn-success">ajax</button>
+        <button onclick="test_api3()" class="btn btn-success">async await</button>
+
+        <table id="tbl-api" class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>name</th>
+                    <th>email</th>
+                    <th>body</th>
                 </tr>
             </thead>
 
@@ -26,12 +55,26 @@
 </div>
 
 @section Scripts{
+    <!-- datatables -->
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
 
+    <!-- swal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.4/sweetalert2.all.min.js"></script>
+
     <script>
+        const siteRoot = window.location.pathname.split('/');
+        const secondLevelLocation = siteRoot[1];
+        const req = location.host.includes('localhost') ? '' : '/' + secondLevelLocation; //
+
+        const url = location.host.includes('localhost') ?location.host :'/' + secondLevelLocation;
+
+        console.log();
+
+        var tbl_test;
+
         $(document).ready(function () {
-            $(`#tbl-test`).DataTable({
+            tbl_test = $(`#tbl-test`).DataTable({
                 destroy: true,
                 processing: true,
                 serverSide: true,
@@ -39,28 +82,31 @@
                 order: [], //[ 1, false ]
                 iDisplayLength: 10,
                 aLengthMenu: [
-                    [10, 20, 50, -1],
-                    [10, 20, 50, "ทั้งหมด"]
+                    [10, 20, 30, 50, -1],
+                    [10, 20, 30, 50, "ทั้งหมด"]
                 ],
                 language: {
                     // search: ""
                 },
 
                 ajax: {
-                    type: `get`,
-                    url: `../Home/GetDataTable`,
+                    type: `post`,
+                    //url: `https://jsonplaceholder.typicode.com/comments`,
+                    //dataType: `json`,
+                    url: `@Url.Action("GetDataTable2", "Home")`,
                     data: function (d) {
-                        //d.office_category_id = office_category_id;
-                        // console.log(d);
+                        d.test_param1 = 11;
+                        d.test_param2 = 22;
+                        console.log(d);
                     },
                 },
 
                 columns: [
                     { data: 'id', className: 'text-center', searchable: false, orderable: false },
                     { data: 'name' },
-                    { data: 'lastname', orderable: false },
-                    { data: 'email', orderable: false },
-                    //{ data: 'id', className: 'text-center', searchable: false, orderable: false },
+                    { data: 'lastname' },
+                    { data: 'email' },
+                    //{ data: 'id', searchable: false, orderable: false },
                 ],
                 columnDefs: [
                     {
@@ -88,5 +134,124 @@
 
             });
         });
+
+        $(`#btn-refresh`).click(function () {
+            tbl_test.ajax.reload();
+        })
+
+        // test api
+        var url_ = `https://jsonplaceholder.typicode.com/comments`;
+        const tbody = document.querySelector("#tbl-api tbody");
+
+        // empty table
+        function empty_data(param) {
+            $(param).empty();
+        }
+        // swal_loading
+        function swal_loading() {
+            Swal.fire({
+                title: 'กำลังโหลดข้อมูล',
+                text: 'กรุณารอสักครู่...',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                    // const b = Swal.getHtmlContainer().querySelector('b')
+                    // timerInterval = setInterval(() => {
+                    //   b.textContent = Swal.getTimerLeft()
+                    // }, 5)
+                },
+                // willClose: () => {
+                //   clearInterval(timerInterval)
+                // }
+            });
+        }
+        //
+        function each_data(object) {
+
+            return object.forEach(
+                ele => tbody.innerHTML +=
+                    `<tr>
+                        <td>${tbody.children.length + 1}</td>
+                        <td>${ele.name}</td>
+                        <td>${ele.email}</td>
+                        <td>${ele.body}</td>
+                    </tr>`
+            );
+        }
+
+
+
+        // fetch
+        function test_api() {
+            fetch(url_)
+                .then(function (resp) {
+
+                    empty_data(`#tbl-api tbody`);
+                    swal_loading();
+                    return resp.json() // แปลงข้อมูลที่ได้เป็น json
+                })
+                .then(function (data1) {
+                    // const tbody = document.querySelector(".table tbody");
+                    console.log(data1);
+
+                    each_data(data1);
+
+                    swal.close();
+                })
+        }
+
+        // ajax
+        function test_api2() {
+            $.ajax({
+                url: url_,
+                // type: "get",
+                dataType: 'json',
+                // mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false, // ช้า
+                processData: false,
+                beforeSend: function () {
+                    empty_data(`#tbl-api tbody`);
+
+                    swal_loading();
+                },
+                success: function (data, textStatus, jqXHR) {
+                    each_data(data);
+                    swal.close();
+                },
+                error: function (resp, textStatus, jqXHR) {
+                    swal.close();
+                },
+            });
+        }
+
+        // async await
+        async function get_user() {
+            empty_data(`#tbl-api tbody`);
+
+            let res = await fetch(url_);
+            console.log(res);
+            let data3 = await res.json();
+            return data3;
+        }
+
+        function test_api3() {
+            swal_loading();
+            // var aa = get_user().data2;
+            get_user().then(
+                data3 => each_data(data3)
+                //data3.forEach(
+                //    data2 => $(`#tbl-api tbody`).append(`<tr>
+                //                <td>${data2.id}</td>
+                //                <td>${data2.name}</td>
+                //                <td>${data2.email}</td>
+                //                <td>${data2.body}</td>
+                //              </tr>`)
+            ).then(
+                swal.close()
+            );
+        }
+                            //
     </script>
 }
