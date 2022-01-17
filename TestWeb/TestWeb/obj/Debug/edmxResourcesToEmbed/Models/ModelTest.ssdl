@@ -1,5 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="test_webModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="tbl_member">
+    <Key>
+      <PropertyRef Name="member_id" />
+    </Key>
+    <Property Name="member_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nchar" MaxLength="100" />
+    <Property Name="lastname" Type="nchar" MaxLength="100" />
+    <Property Name="created_at" Type="date" />
+    <Property Name="updated_at" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+  </EntityType>
   <EntityType Name="tbl_test">
     <Key>
       <PropertyRef Name="id" />
@@ -10,6 +20,7 @@
     <Property Name="email" Type="nchar" MaxLength="100" />
   </EntityType>
   <EntityContainer Name="test_webModelStoreContainer">
+    <EntitySet Name="tbl_member" EntityType="Self.tbl_member" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tbl_test" EntityType="Self.tbl_test" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

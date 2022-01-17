@@ -26,5 +26,6 @@ namespace TestWeb.Models
         }
     
         public virtual DbSet<tbl_test> tbl_test { get; set; }
+        public virtual DbSet<tbl_member> tbl_member { get; set; }
     }
 }

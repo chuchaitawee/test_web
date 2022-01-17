@@ -148,6 +148,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelTest.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResultViewModel .cs" />
+    <Compile Include="Models\tbl_member.cs">
+      <DependentUpon>ModelTest.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\tbl_test.cs">
       <DependentUpon>ModelTest.tt</DependentUpon>
     </Compile>

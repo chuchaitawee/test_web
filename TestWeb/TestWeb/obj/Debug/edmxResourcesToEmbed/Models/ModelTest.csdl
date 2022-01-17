@@ -11,5 +11,16 @@
   </EntityType>
   <EntityContainer Name="test_webEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="tbl_test" EntityType="Self.tbl_test" />
+    <EntitySet Name="tbl_member" EntityType="test_webModel.tbl_member" />
   </EntityContainer>
+  <EntityType Name="tbl_member">
+    <Key>
+      <PropertyRef Name="member_id" />
+    </Key>
+    <Property Name="member_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="lastname" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="created_at" Type="DateTime" Precision="0" />
+    <Property Name="updated_at" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+  </EntityType>
 </Schema>
